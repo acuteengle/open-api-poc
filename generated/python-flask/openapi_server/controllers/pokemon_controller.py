@@ -8,7 +8,7 @@ from openapi_server.models.pokemon import Pokemon  # noqa: E501
 from openapi_server.models.pokemon_create_request import PokemonCreateRequest  # noqa: E501
 from openapi_server.models.pokemon_list_response import PokemonListResponse  # noqa: E501
 from openapi_server.models.pokemon_update_request import PokemonUpdateRequest  # noqa: E501
-from openapi_server import util
+from openapi_server.services import pokemon_service
 
 
 def create_pokemon(body):  # noqa: E501
@@ -24,7 +24,7 @@ def create_pokemon(body):  # noqa: E501
     pokemon_create_request = body
     if connexion.request.is_json:
         pokemon_create_request = PokemonCreateRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return pokemon_service.create_pokemon(pokemon_create_request)
 
 
 def delete_pokemon_by_id(pokemon_id):  # noqa: E501
@@ -38,7 +38,7 @@ def delete_pokemon_by_id(pokemon_id):  # noqa: E501
 
     :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return pokemon_service.delete_pokemon_by_id(pokemon_id)
 
 
 def get_pokemon_by_id(pokemon_id):  # noqa: E501
@@ -52,7 +52,7 @@ def get_pokemon_by_id(pokemon_id):  # noqa: E501
 
     :rtype: Union[Pokemon, Tuple[Pokemon, int], Tuple[Pokemon, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return pokemon_service.get_pokemon_by_id(pokemon_id)
 
 
 def list_pokemon(limit=None, offset=None):  # noqa: E501
@@ -67,7 +67,7 @@ def list_pokemon(limit=None, offset=None):  # noqa: E501
 
     :rtype: Union[PokemonListResponse, Tuple[PokemonListResponse, int], Tuple[PokemonListResponse, int, Dict[str, str]]
     """
-    return 'do some magic!'
+    return pokemon_service.list_pokemon(limit, offset)
 
 
 def replace_pokemon_by_id(pokemon_id, body):  # noqa: E501
@@ -86,7 +86,7 @@ def replace_pokemon_by_id(pokemon_id, body):  # noqa: E501
     pokemon_create_request = body
     if connexion.request.is_json:
         pokemon_create_request = PokemonCreateRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return pokemon_service.replace_pokemon_by_id(pokemon_id, pokemon_create_request)
 
 
 def update_pokemon_by_id(pokemon_id, body):  # noqa: E501
@@ -105,4 +105,4 @@ def update_pokemon_by_id(pokemon_id, body):  # noqa: E501
     pokemon_update_request = body
     if connexion.request.is_json:
         pokemon_update_request = PokemonUpdateRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    return pokemon_service.update_pokemon_by_id(pokemon_id, pokemon_update_request)
