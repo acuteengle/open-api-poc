@@ -1,0 +1,345 @@
+openapi: 3.0.3
+info:
+  description: A simple CRUD API for managing Pokemon.
+  title: Pokemon API
+  version: 1.0.0
+servers:
+- description: Local development server
+  url: http://localhost:3000
+tags:
+- description: Pokemon CRUD operations
+  name: Pokemon
+paths:
+  /pokemon:
+    get:
+      operationId: listPokemon
+      parameters:
+      - description: Maximum number of Pokemon to return.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 20
+          minimum: 1
+          type: integer
+        style: form
+      - description: Number of Pokemon to skip.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PokemonListResponse"
+          description: A paginated list of Pokemon.
+      summary: List Pokemon
+      tags:
+      - Pokemon
+      x-eov-operation-handler: controllers/PokemonController
+    post:
+      operationId: createPokemon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PokemonCreateRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+          description: Pokemon created.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Invalid request body.
+      summary: Create Pokemon
+      tags:
+      - Pokemon
+      x-eov-operation-handler: controllers/PokemonController
+  /pokemon/{pokemonId}:
+    delete:
+      operationId: deletePokemonById
+      parameters:
+      - description: Unique ID of a Pokemon.
+        explode: false
+        in: path
+        name: pokemonId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Pokemon deleted.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Pokemon not found.
+      summary: Delete Pokemon by ID
+      tags:
+      - Pokemon
+      x-eov-operation-handler: controllers/PokemonController
+    get:
+      operationId: getPokemonById
+      parameters:
+      - description: Unique ID of a Pokemon.
+        explode: false
+        in: path
+        name: pokemonId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+          description: Pokemon found.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Pokemon not found.
+      summary: Get Pokemon by ID
+      tags:
+      - Pokemon
+      x-eov-operation-handler: controllers/PokemonController
+    patch:
+      operationId: updatePokemonById
+      parameters:
+      - description: Unique ID of a Pokemon.
+        explode: false
+        in: path
+        name: pokemonId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PokemonUpdateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+          description: Pokemon updated.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Pokemon not found.
+      summary: Update Pokemon by ID
+      tags:
+      - Pokemon
+      x-eov-operation-handler: controllers/PokemonController
+    put:
+      operationId: replacePokemonById
+      parameters:
+      - description: Unique ID of a Pokemon.
+        explode: false
+        in: path
+        name: pokemonId
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PokemonCreateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pokemon"
+          description: Pokemon replaced.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+          description: Pokemon not found.
+      summary: Replace Pokemon by ID
+      tags:
+      - Pokemon
+      x-eov-operation-handler: controllers/PokemonController
+components:
+  schemas:
+    Pokemon:
+      example:
+        createdAt: 2026-03-26T12:00:00Z
+        level: 25
+        name: Pikachu
+        isLegendary: false
+        id: f2fb3f3e-9db6-4aa5-8e8d-d86dcf8c4c36
+        type: electric
+        updatedAt: 2026-03-26T12:30:00Z
+      properties:
+        id:
+          example: f2fb3f3e-9db6-4aa5-8e8d-d86dcf8c4c36
+          format: uuid
+          type: string
+        name:
+          example: Pikachu
+          type: string
+        type:
+          example: electric
+          type: string
+        level:
+          example: 25
+          maximum: 100
+          minimum: 1
+          type: integer
+        isLegendary:
+          default: false
+          example: false
+          type: boolean
+        createdAt:
+          example: 2026-03-26T12:00:00Z
+          format: date-time
+          type: string
+        updatedAt:
+          example: 2026-03-26T12:30:00Z
+          format: date-time
+          type: string
+      required:
+      - id
+      - level
+      - name
+      - type
+      type: object
+    PokemonCreateRequest:
+      example:
+        level: 8
+        name: name
+        isLegendary: false
+        type: type
+      properties:
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        type:
+          maxLength: 50
+          minLength: 1
+          type: string
+        level:
+          maximum: 100
+          minimum: 1
+          type: integer
+        isLegendary:
+          default: false
+          type: boolean
+      required:
+      - level
+      - name
+      - type
+      type: object
+    PokemonUpdateRequest:
+      example:
+        level: 8
+        name: name
+        isLegendary: true
+        type: type
+      minProperties: 1
+      properties:
+        name:
+          maxLength: 50
+          minLength: 1
+          type: string
+        type:
+          maxLength: 50
+          minLength: 1
+          type: string
+        level:
+          maximum: 100
+          minimum: 1
+          type: integer
+        isLegendary:
+          type: boolean
+      type: object
+    PokemonListResponse:
+      example:
+        total: 151
+        offset: 0
+        limit: 20
+        items:
+        - createdAt: 2026-03-26T12:00:00Z
+          level: 25
+          name: Pikachu
+          isLegendary: false
+          id: f2fb3f3e-9db6-4aa5-8e8d-d86dcf8c4c36
+          type: electric
+          updatedAt: 2026-03-26T12:30:00Z
+        - createdAt: 2026-03-26T12:00:00Z
+          level: 25
+          name: Pikachu
+          isLegendary: false
+          id: f2fb3f3e-9db6-4aa5-8e8d-d86dcf8c4c36
+          type: electric
+          updatedAt: 2026-03-26T12:30:00Z
+      properties:
+        items:
+          items:
+            $ref: "#/components/schemas/Pokemon"
+          type: array
+        total:
+          example: 151
+          minimum: 0
+          type: integer
+        limit:
+          example: 20
+          minimum: 1
+          type: integer
+        offset:
+          example: 0
+          minimum: 0
+          type: integer
+      required:
+      - items
+      - limit
+      - offset
+      - total
+      type: object
+    ErrorResponse:
+      example:
+        message: Pokemon not found.
+      properties:
+        message:
+          example: Pokemon not found.
+          type: string
+      required:
+      - message
+      type: object
