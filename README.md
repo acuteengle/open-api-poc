@@ -21,6 +21,13 @@ Install Java quickly on macOS (Homebrew):
 brew install openjdk
 ```
 
+Then make sure that shell can find it
+```
+echo 'export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+java -version
+```
+
 ## 1) Validate the spec (optional but recommended)
 
 Using Node package:
